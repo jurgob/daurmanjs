@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+
+		
+		ciao
+		<div id="start" ></div>
+
+
+		<script type="text/javascript" >
+			var JTC = function(){
+				
+
+				this.render = function(JTCEl, DOMel){
+					document.addEventListener('DOMContentLoaded', function() {
+						DOMel.innerHTML = '<div>test</div>';
+					});
+				}
+
+				return {render: this.render}
+
+			}()
+		</script>
+
+		<script type="text/javascript" >
+			JTC.render(null, document.getElementById('start'))
+
+		</script>
+
+		
+
+	</body>
+
+
+</html>
