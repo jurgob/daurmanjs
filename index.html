@@ -5,30 +5,113 @@
 
 	<body>
 
-		
+
 		ciao
 		<div id="start" ></div>
 
 
 		<script type="text/javascript" >
 			var JTC = function(){
+				var _JTC = this;
+				var _printf = function(string, vars){
+					var _i = 0;
+					return string.replace(/%s/g, function(match){ return vars[_i++]||''  })
+				}
 				
-
+				var _printEl = function(tag, args, content){
+					return _printf('<%s %s >%s</%s  >', [tag, args, content, tag])
+				}
+				
 				this.render = function(JTCEl, DOMel){
-					document.addEventListener('DOMContentLoaded', function() {
-						DOMel.innerHTML = '<div>test</div>';
-					});
+						DOMel.innerHTML = JTCEl.render();
 				}
 
-				return {render: this.render}
+				this.createElement = function(tag, args, content){
+					if(content.render){
+						return _printEl(tag, args, content.render());
+					}else{
+						return _printEl(tag, args, content);
+					}
+				}
 
+				this.createComponent = function(defObj){
+					return defObj
+				}
+				
+				return {
+					render: this.render,
+					component: this.component,
+					createComponent: this.createComponent,
+					createElement: this.createElement
+				}
 			}()
 		</script>
 
+
 		<script type="text/javascript" >
-			JTC.render(null, document.getElementById('start'))
+				document.addEventListener('DOMContentLoaded', function() {
+					var _jtcScripts = document.getElementsByTagName('script')
+					_jtcScripts = Array.prototype.filter.call(
+						_jtcScripts, 
+						function(item){  return (item.getAttribute('type')||'').match(/text\/jtc/)   }
+					);
+					_jtcScripts.forEach(function(item){
+						console.log('test'+item.innerHTML)
+						var script = document.createElement("script");
+						script.innerHTML = item.innerHTML
+						document.body.appendChild(script);
+					})
+
+				});
+		</script>
+
+
+		<script type="text/jtc" >
+			var MyComponentItem = JTC.createComponent({
+				render:function(){
+					console.log('my render')
+					return JTC.createElement('li', null, 'contentuo prova')	
+				},
+				displayName: 'MyComponentItem'
+			});
+
+			var MyComponent = JTC.createComponent({
+				render:function(){
+					console.log('my render')
+					return JTC.createElement('ul', null, MyComponentItem)	
+				},
+				displayName: 'MyComponent'
+			});
+
+			//alert(JTC.render)
+
+			JTC.render(MyComponent, document.getElementById('start'))
 
 		</script>
+
+
+
+		<!--<script type="text/javascript" >
+			
+			var MyComponentItem = JTC.createComponent({
+				render:function(){
+					console.log('my render')
+					return JTC.createElement('li', null, 'contentuo prova')	
+				},
+				displayName: 'MyComponentItem'
+			});
+
+			var MyComponent = JTC.createComponent({
+				render:function(){
+					console.log('my render')
+					return JTC.createElement('ul', null, MyComponentItem)	
+				},
+				displayName: 'MyComponent'
+			});
+
+			JTC.render(MyComponent, document.getElementById('start'))
+
+		</script>-->
 
 		
 
